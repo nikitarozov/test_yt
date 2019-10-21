@@ -1,12 +1,14 @@
 package com.example.demo;
 
+import com.example.demo.algorithms.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class Aggregator {
+class Aggregator {
     private final String DELIMITER = ",";
     private final int INDEX_PRICE = 2;
     private final int INDEX_DATE = 1;
@@ -16,8 +18,8 @@ public class Aggregator {
     Aggregator() {
         mapInstrument.put("INSTRUMENT1", new AverageAlgorithm());
         mapInstrument.put("INSTRUMENT2", new AverageAlgorithm(
-                new GregorianCalendar(1996, Calendar.FEBRUARY, 0).getTime(),
-                new GregorianCalendar(1996, Calendar.DECEMBER, 0).getTime())
+                new GregorianCalendar(2014, Calendar.FEBRUARY, 0).getTime(),
+                new GregorianCalendar(2014, Calendar.DECEMBER, 0).getTime())
         );
         mapInstrument.put("INSTRUMENT3", new MaxPriceAlgorithm());
     }
@@ -28,8 +30,11 @@ public class Aggregator {
             return;
         }
         try {
-            Date date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(split[INDEX_DATE]);
-            Instrument instrument = new Instrument(date, split[INDEX_INSTRUEMT], Double.parseDouble(split[INDEX_PRICE]));
+            Instrument instrument = new Instrument(
+                    new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(split[INDEX_DATE]),
+                    split[INDEX_INSTRUEMT],
+                    Double.parseDouble(split[INDEX_PRICE])
+            );
             Algorithm<?> algorithm = mapInstrument.get(instrument.getName());
             if (algorithm == null) {
                 algorithm = new SpecialCaseAlgorithm();
